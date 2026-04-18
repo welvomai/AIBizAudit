@@ -1,191 +1,109 @@
 import os
-import re
+from io import BytesIO
 from datetime import datetime
-from weasyprint import HTML
+
 from jinja2 import Template
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "report.html")
 
-def convert_to_html(text: str) -> str:
-    lines = text.split('\n')
-    html_lines = []
-    in_table = False
-    in_ul = False
-    in_ol = False
-    pending_heading = None  # holds h2/h3 until we know what follows
+SECTION_HEADINGS = {
+    "sec-1": "Section 1: Executive Briefing",
+    "sec-2": "Section 2: Comprehensive Department Analysis",
+    "sec-3": "Section 3: Department Benchmark Comparison",
+    "sec-4": "Section 4: Leakage Scorecard",
+    "sec-5": "Section 5: Cost Reduction Opportunities",
+    "sec-6": "Section 6: 90-180 Day Implementation Roadmap",
+    "sec-7": "Section 7: 12-Month ROI Projections",
+    "sec-8": "Section 8: Strategic Recommendations",
+    "sec-9": "Section 9: Risk Mitigation Plan",
+    "sec-10": "Section 10: Future Vision",
+    "sec-11": "Section 11: Next Steps & Call to Action",
+}
 
-    def flush_pending():
-        """Write any pending heading that wasn't followed by a table."""
-        nonlocal pending_heading
-        if pending_heading:
-            html_lines.append(pending_heading)
-            pending_heading = None
 
-    for line in lines:
-        stripped = line.strip()
+def _normalize_text(value: str) -> str:
+    return " ".join((value or "").split()).lower()
 
-        if not stripped:
-            if in_ul: html_lines.append('</ul>'); in_ul = False
-            if in_ol: html_lines.append('</ol>'); in_ol = False
-            if in_table: html_lines.append('</table>'); in_table = False
-            flush_pending()
+
+def _extract_section_pages(pdf_bytes: bytes) -> dict:
+    try:
+        from pypdf import PdfReader
+    except Exception as exc:
+        raise RuntimeError("pypdf is required to build the report table of contents") from exc
+
+    reader = PdfReader(BytesIO(pdf_bytes))
+    normalized_headings = {
+        section_id: _normalize_text(heading)
+        for section_id, heading in SECTION_HEADINGS.items()
+    }
+    section_pages = {}
+
+    # Pages 1-2 are cover and index; section labels appear there and would create false matches.
+    for page_number, pdf_page in enumerate(reader.pages, start=1):
+        if page_number <= 2:
             continue
-
-        # Skip separator lines
-        if re.match(r'^[-=]{3,}$', stripped):
-            continue
-
-        # Clean markdown
-        stripped = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', stripped)
-        stripped = re.sub(r'\*(.*?)\*', r'<em>\1</em>', stripped)
-        stripped = re.sub(r'#{1,6}\s*', '', stripped)
-        stripped = re.sub(r'\[(.*?)\]\(.*?\)', r'\1', stripped)
-
-        # SECTION headers — force page break before each (except first)
-        if re.match(r'^SECTION\s+\d+', stripped, re.IGNORECASE):
-            flush_pending()
-            if in_ul: html_lines.append('</ul>'); in_ul = False
-            if in_ol: html_lines.append('</ol>'); in_ol = False
-            if in_table: html_lines.append('</table>'); in_table = False
-            is_first = not any('section-header' in l for l in html_lines)
-            css = 'section-header no-break' if is_first else 'section-header'
-            html_lines.append(f'<div class="{css}">{stripped}</div>')
-            continue
-
-        # Numbered subsections like 1.1, 2.3 — store as pending
-        if re.match(r'^\d+\.\d+\s+', stripped):
-            flush_pending()
-            if in_ul: html_lines.append('</ul>'); in_ul = False
-            if in_ol: html_lines.append('</ol>'); in_ol = False
-            if in_table: html_lines.append('</table>'); in_table = False
-            pending_heading = f'<h2>{stripped}</h2>'
-            continue
-
-        # ALL CAPS headings — store as pending
-        clean_check = re.sub(r'<[^>]+>', '', stripped)
-        if clean_check.isupper() and len(clean_check) > 4 and not clean_check.startswith('-'):
-            flush_pending()
-            if in_ul: html_lines.append('</ul>'); in_ul = False
-            if in_ol: html_lines.append('</ol>'); in_ol = False
-            if in_table: html_lines.append('</table>'); in_table = False
-            pending_heading = f'<h3>{stripped}</h3>'
-            continue
-
-        # Tables — wrap heading+table in a no-break div
-        if '|' in stripped and stripped.count('|') >= 2:
-            if not in_table:
-                # If there's a pending heading, start the wrapper div with it
-                if pending_heading:
-                    html_lines.append('<div class="keep-together">')
-                    html_lines.append(pending_heading)
-                    pending_heading = None
-                html_lines.append('<table>')
-                in_table = True
-            if re.match(r'^[\-\|\ :]+$', stripped):
+        page_text = _normalize_text(pdf_page.extract_text() or "")
+        for section_id, normalized_heading in normalized_headings.items():
+            if section_id in section_pages:
                 continue
-            cells = [c.strip() for c in stripped.split('|') if c.strip()]
-            if not cells:
-                continue
-            prev = html_lines[-1] if html_lines else ''
-            if prev == '<table>':
-                row = ''.join([f'<th>{c}</th>' for c in cells])
-                html_lines.append(f'<tr>{row}</tr>')
-            else:
-                is_total = cells[0].upper().startswith('TOTAL')
-                row_class = ' class="total-row"' if is_total else ''
-                row = ''.join([f'<td>{c}</td>' for c in cells])
-                html_lines.append(f'<tr{row_class}>{row}</tr>')
-            continue
-        else:
-            if in_table:
-                html_lines.append('</table>')
-                # Close the keep-together wrapper if it was opened
-                if any('<div class="keep-together">' in l for l in html_lines[-20:]):
-                    html_lines.append('</div>')
-                in_table = False
+            if normalized_heading and normalized_heading in page_text:
+                section_pages[section_id] = page_number
 
-        # Numbered lists
-        if re.match(r'^\d+\.\s+', stripped):
-            flush_pending()
-            if not in_ol:
-                if in_ul: html_lines.append('</ul>'); in_ul = False
-                html_lines.append('<ol>')
-                in_ol = True
-            content = re.sub(r'^\d+\.\s+', '', stripped)
-            html_lines.append(f'<li>{content}</li>')
-            continue
-        else:
-            if in_ol:
-                html_lines.append('</ol>')
-                in_ol = False
+    return section_pages
 
-        # Bullet points
-        if re.match(r'^[-*•]\s+', stripped):
-            flush_pending()
-            if not in_ul:
-                html_lines.append('<ul>')
-                in_ul = True
-            content = re.sub(r'^[-*•]\s+', '', stripped)
-            html_lines.append(f'<li>{content}</li>')
-            continue
-        else:
-            if in_ul:
-                html_lines.append('</ul>')
-                in_ul = False
 
-        # Highlight boxes
-        clean = re.sub(r'<[^>]+>', '', stripped).upper()
-        if any(w in clean for w in ['URGENT', 'CRITICAL', 'RED FLAG', 'WARNING']):
-            flush_pending()
-            html_lines.append(f'<div class="highlight-box red">{stripped}</div>')
-            continue
-        if any(w in clean for w in ['TOTAL ANNUAL', 'NET BENEFIT', 'ROI:', 'BREAK-EVEN']):
-            flush_pending()
-            html_lines.append(f'<div class="highlight-box green">{stripped}</div>')
-            continue
+def _render_pdf_bytes(playwright, html: str) -> bytes:
+    browser = playwright.chromium.launch(headless=True)
+    try:
+        # Approximate A4 at 96dpi for stable print-layout calculations.
+        page = browser.new_page(viewport={"width": 794, "height": 1123})
+        page.emulate_media(media="print")
+        page.set_content(html, wait_until="networkidle")
+        return page.pdf(
+            format="A4",
+            print_background=True,
+            prefer_css_page_size=True,
+            scale=1,
+        )
+    finally:
+        browser.close()
 
-        # Default paragraph
-        flush_pending()
-        html_lines.append(f'<p>{stripped}</p>')
 
-    # Close any open tags
-    if in_ul: html_lines.append('</ul>')
-    if in_ol: html_lines.append('</ol>')
-    if in_table:
-        html_lines.append('</table>')
-        html_lines.append('</div>')
-    flush_pending()
+def generate_pdf(report_data: dict, form_data: dict) -> bytes:
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception as exc:
+        raise RuntimeError("playwright is required to generate PDF reports") from exc
 
-    return '\n'.join(html_lines)  
+    company = report_data.get("company") or {}
+    overview = report_data.get("overview") or {}
 
-def generate_pdf(analysis_text: str, form_data: dict) -> bytes:
-
-    company_name = form_data.get("Company name", "Your Business")
-    industry = form_data.get("Industry", "Business")
-    employees = form_data.get("Company size", "N/A")
-    contact_name = form_data.get("Contact Person Name", "")
+    company_name = company.get("name") or form_data.get("Company name", "Your Business")
+    industry = company.get("industry") or form_data.get("Industry", "Business")
+    employees = company.get("size") or form_data.get("Company size", "N/A")
     date = datetime.now().strftime("%B %d, %Y")
 
-    # Replace any placeholders the AI left in
-    analysis_text = analysis_text.replace("[Business Name]", company_name)
-    analysis_text = analysis_text.replace("[Insert Date]", date)
-    analysis_text = analysis_text.replace("[ABC]", contact_name)
-    analysis_text = analysis_text.replace("[Your Name]", "Welvom AI Team")
-    analysis_text = analysis_text.replace("[Contact Person]", contact_name)
+    with open(TEMPLATE_PATH, "r", encoding="utf-8") as file_handle:
+        template = Template(file_handle.read())
 
-    report_html = convert_to_html(analysis_text)
+    base_context = {
+        "report": report_data,
+        "company_name": company_name,
+        "industry": industry,
+        "employees": employees,
+        "date": date,
+        "overall_score": overview.get("overall_score", "N/A"),
+        "readiness_level": overview.get("readiness_level", "Emerging"),
+    }
 
-    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
-        template_str = f.read()
+    with sync_playwright() as playwright:
+        # First pass: render with placeholders to discover the real PDF page numbers.
+        first_pass_html = template.render(**base_context, toc_pages={})
+        first_pass_pdf = _render_pdf_bytes(playwright, first_pass_html)
 
-    template = Template(template_str)
-    rendered_html = template.render(
-        company_name=company_name,
-        industry=industry,
-        employees=employees,
-        date=date,
-        report_html=report_html
-    )
+        # Second pass: render TOC with page numbers extracted from the first pass PDF.
+        toc_pages = _extract_section_pages(first_pass_pdf)
+        final_html = template.render(**base_context, toc_pages=toc_pages)
+        pdf_bytes = _render_pdf_bytes(playwright, final_html)
 
-    pdf_bytes = HTML(string=rendered_html).write_pdf()
     return pdf_bytes

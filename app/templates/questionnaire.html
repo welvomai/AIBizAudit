@@ -1,0 +1,1007 @@
+{% extends "base.html" %}
+
+{% block title %}Business Assessment Form - Welvom AI{% endblock %}
+
+{% block extra_head %}
+<style>
+.assessment-shell {
+    background:
+        radial-gradient(1200px 500px at 10% -20%, rgba(14, 165, 233, 0.14), transparent 60%),
+        radial-gradient(900px 450px at 95% 0%, rgba(8, 47, 73, 0.08), transparent 50%);
+    font-feature-settings: "ss01" 1, "ss02" 1, "calt" 1;
+}
+.floating-panel {
+    position: static;
+}
+.hero-orb {
+    position: absolute;
+    inset: auto auto -80px -80px;
+    width: 220px;
+    height: 220px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(6,182,212,0.18), rgba(6,182,212,0));
+    filter: blur(6px);
+    pointer-events: none;
+}
+.hero-orb.alt {
+    inset: -70px -40px auto auto;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(14,165,233,0.16), rgba(14,165,233,0));
+}
+.step-chip {
+    transition: all 0.2s ease;
+}
+.step-chip.active {
+    background: linear-gradient(90deg, #0369a1, #06b6d4);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.22);
+}
+.question-card {
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 1.35rem;
+}
+.dark .question-card {
+    background: rgba(15, 23, 42, 0.78);
+}
+.assessment-shell h1,
+.assessment-shell h2,
+.assessment-shell h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+}
+.assessment-shell h1 {
+    max-width: 16ch;
+}
+.assessment-shell p,
+.assessment-shell li,
+.assessment-shell label,
+.assessment-shell input,
+.assessment-shell textarea,
+.assessment-shell select {
+    line-height: 1.55;
+}
+.choice-grid {
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.choice-item input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.choice-item span {
+    display: block;
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240);
+    background: rgb(248 250 252);
+    color: rgb(15 23 42);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.18s ease;
+}
+.dark .choice-item span {
+    border-color: rgb(51 65 85);
+    background: rgb(15 23 42);
+    color: rgb(226 232 240);
+}
+.choice-item input:checked + span {
+    border-color: rgb(6 182 212);
+    background: linear-gradient(90deg, rgba(3, 105, 161, 0.14), rgba(6, 182, 212, 0.14));
+    color: rgb(3 105 161);
+}
+.dark .choice-item input:checked + span {
+    color: rgb(125 211 252);
+}
+.section-title {
+    scroll-margin-top: 100px;
+}
+.input-premium, .textarea-premium, .select-premium {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240);
+    background: rgba(255,255,255,0.92);
+    padding: 0.95rem 1rem;
+    color: rgb(15 23 42);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.dark .input-premium, .dark .textarea-premium, .dark .select-premium {
+    border-color: rgb(51 65 85);
+    background: rgba(15,23,42,0.92);
+    color: rgb(226 232 240);
+}
+.input-premium:focus, .textarea-premium:focus, .select-premium:focus {
+    outline: none;
+    border-color: rgb(14 165 233);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+}
+.option-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.option-kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: rgb(37 99 235);
+}
+.assessment-shell .form-step + .form-step {
+    margin-top: 1.25rem;
+}
+#nextBtn,
+#submitBtn {
+    background: #0369a1;
+    color: #ffffff;
+    padding: 0.9rem 2.1rem;
+    border-radius: 0.95rem;
+}
+#nextBtn:hover,
+#submitBtn:hover {
+    background: #075985;
+}
+#nextBtn:disabled,
+#submitBtn:disabled {
+    background: #0369a1;
+    color: #ffffff;
+    opacity: 1;
+    cursor: wait;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="assessment-shell py-8 md:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+            <section class="card-premium floating-panel relative overflow-hidden p-7 md:p-8 mb-6 md:mb-7">
+                    <div class="hero-orb"></div>
+                    <div class="hero-orb alt"></div>
+                    <p class="option-kicker mb-2">Business Assessment Form</p>
+                    <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-4">Help us understand your company’s operations, technology, and growth readiness.</h1>
+                    <p class="text-slate-600 text-sm md:text-[0.98rem] mb-6 max-w-2xl">Takes about 10-15 minutes. Your answers will go directly into the existing analysis and report flow.</p>
+
+                    <div class="mb-5 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
+                        <p class="text-[0.72rem] font-semibold tracking-[0.16em] uppercase text-slate-500 mb-3">What you'll cover</p>
+                        <ul class="space-y-2.5 text-sm text-slate-700">
+                            <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-cyan-500"></span><span>Company profile, revenue band, and contact details</span></li>
+                            <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-cyan-500"></span><span>Leadership, customer, HR, sales, operations, finance, and IT maturity</span></li>
+                            <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-cyan-500"></span><span>Top challenges that feed the report and AI analysis</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm font-semibold">Progress</p>
+                            <p class="text-sm text-slate-500"><span id="currentStep">1</span>/8</p>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <div id="progressBar" class="h-2 bg-gradient-to-r from-sky-600 to-cyan-500 transition-all duration-300" style="width:12.5%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold">
+                        <div class="step-chip active rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="1">Company</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="2">Leadership</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="3">Customer</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="4">HR</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="5">Sales</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="6">Operations</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="7">Supply / Quality</div>
+                        <div class="step-chip rounded-lg px-3 py-2 text-center bg-slate-100" data-chip="8">Finance / IT</div>
+                    </div>
+            </section>
+
+            <section>
+                <div id="successState" class="hidden card-premium text-center mb-6">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-green-100 text-green-700 flex items-center justify-center mb-4">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Assessment Submitted</h2>
+                    <p class="text-slate-600">Your response has been submitted.</p>
+                </div>
+
+                <form id="assessmentForm" method="POST" action="/submit-assessment" class="space-y-6">
+                    <section class="form-step card-premium question-card section-title" data-step="1">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 1</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Company Information</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Industry</label></div>
+                                <select name="Industry" class="select-premium" required>
+                                    <option value="">Select industry</option>
+                                    <option>Manufacturing</option>
+                                    <option>IT</option>
+                                    <option>Retail</option>
+                                    <option>Healthcare</option>
+                                    <option>Finance</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Company size</label></div>
+                                <select name="Company size" class="select-premium" required>
+                                    <option value="">Select company size</option>
+                                    <option>1-10</option>
+                                    <option>11-50</option>
+                                    <option>51-200</option>
+                                    <option>201-500</option>
+                                    <option>500+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Company name</label></div>
+                                <input type="text" name="Company name" class="input-premium" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Annual Revenue</label></div>
+                                <select name="Annual Revenue" class="select-premium" required>
+                                    <option value="">Select annual revenue</option>
+                                    <option>&lt;1Cr</option>
+                                    <option>1-5Cr</option>
+                                    <option>5-20Cr</option>
+                                    <option>20Cr+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Contact person name</label></div>
+                                <input type="text" name="Contact person name" class="input-premium" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Email address</label></div>
+                                <input type="email" name="Email address" class="input-premium" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Mobile number</label></div>
+                                <input type="tel" name="Mobile number" class="input-premium" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Website</label></div>
+                                <input type="url" name="Website" class="input-premium" placeholder="https://" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Years in business</label></div>
+                                <input type="number" min="0" name="Years in business" class="input-premium" required>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Do you have a UDYAM certificate?</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Do you have a UDYAM certificate?" value="Yes" required><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Do you have a UDYAM certificate?" value="No" required><span>No</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="2">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 2</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Leadership</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Size of Leadership Team</label></div>
+                                <input type="number" min="0" name="Size of Leadership Team" class="input-premium">
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">How quickly are strategic decisions made?</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="How quickly are strategic decisions made?" value="Very fast"><span>Very fast</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="How quickly are strategic decisions made?" value="Moderate"><span>Moderate</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="How quickly are strategic decisions made?" value="Slow"><span>Slow</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Leadership team meeting frequency</label></div>
+                                <select name="Leadership team meeting frequency" class="select-premium">
+                                    <option value="">Select frequency</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Leadership's understanding of AI</label></div>
+                                <input type="range" min="1" max="5" step="1" name="Leadership's understanding of AI" class="w-full">
+                                <div class="flex justify-between text-xs text-slate-500 mt-1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Annual budget for innovation/technology</label></div>
+                                <select name="Annual budget for innovation/technology" class="select-premium">
+                                    <option value="">Select budget</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Resistance to new technology</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Resistance to new technology" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Resistance to new technology" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Resistance to new technology" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Decisions are mostly based on</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Decisions are mostly based on" value="Data-driven"><span>Data-driven</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Decisions are mostly based on" value="Balanced"><span>Balanced</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Decisions are mostly based on" value="Intuition"><span>Intuition</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">How do you track performance?</label></div>
+                                <textarea name="How do you track performance?" rows="4" class="textarea-premium"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="3">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 3</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Customer Engagement</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer acquisition cost trend</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Customer acquisition cost trend" value="Increasing"><span>Increasing</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer acquisition cost trend" value="Stable"><span>Stable</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer acquisition cost trend" value="Decreasing"><span>Decreasing</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Average lead response time (hours)</label></div>
+                                <input type="number" min="0" step="0.1" name="Average lead response time (hours)" class="input-premium">
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer support channels</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="checkbox" name="Customer support channels" value="Email"><span>Email</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Customer support channels" value="Phone"><span>Phone</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Customer support channels" value="WhatsApp"><span>WhatsApp</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Customer support channels" value="Chat"><span>Chat</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Customer support channels" value="Other"><span>Other</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Average support response time</label></div>
+                                <input type="text" name="Average support response time" class="input-premium" placeholder="e.g. 2 hours">
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer satisfaction (CSAT score)</label></div>
+                                <input type="number" min="0" max="100" name="Customer satisfaction (CSAT score)" class="input-premium">
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer retention rate (%)</label></div>
+                                <input type="number" min="0" max="100" name="Customer retention rate (%)" class="input-premium">
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">How do you collect customer feedback?</label></div>
+                                <textarea name="How do you collect customer feedback?" rows="4" class="textarea-premium"></textarea>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Average complaint resolution time</label></div>
+                                <input type="text" name="Average complaint resolution time" class="input-premium" placeholder="e.g. 1 day">
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">CRM system usage</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="CRM system usage" value="None"><span>None</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="CRM system usage" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="CRM system usage" value="Advanced"><span>Advanced</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Do you track customer lifetime value (CLV)?</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Do you track customer lifetime value (CLV)?" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Do you track customer lifetime value (CLV)?" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer personalization level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Customer personalization level" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer personalization level" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer personalization level" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">Post-purchase follow-up process</label></div>
+                                <textarea name="Post-purchase follow-up process" rows="4" class="textarea-premium"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="4">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 4</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Human Resources</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Total employee headcount</label></div><input type="number" min="0" name="Total employee headcount" class="input-premium"></div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Average time to hire (days)</label></div><input type="number" min="0" name="Average time to hire (days)" class="input-premium"></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">How are candidates screened initially?</label></div><textarea name="How are candidates screened initially?" rows="4" class="textarea-premium"></textarea></div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Annual employee turnover rate (%)</label></div><input type="number" min="0" max="100" name="Annual employee turnover rate (%)" class="input-premium"></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Employee onboarding process</label></div><textarea name="Employee onboarding process" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Attendance and leave management</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Attendance and leave management" value="Manual"><span>Manual</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Attendance and leave management" value="Software"><span>Software</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Attendance and leave management" value="Automated"><span>Automated</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Performance review frequency</label></div>
+                                <select name="Performance review frequency" class="select-premium">
+                                    <option value="">Select frequency</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Training and development budget</label></div>
+                                <select name="Training and development budget" class="select-premium">
+                                    <option value="">Select budget</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">How do you identify skills gaps?</label></div><textarea name="How do you identify skills gaps?" rows="4" class="textarea-premium"></textarea></div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Employee engagement score</label></div><input type="number" min="0" max="100" name="Employee engagement score" class="input-premium"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Payroll processing</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Payroll processing" value="Manual"><span>Manual</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Payroll processing" value="Semi-automated"><span>Semi-automated</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Payroll processing" value="Automated"><span>Automated</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">HR query resolution time</label></div><input type="text" name="HR query resolution time" class="input-premium"></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Exit interview process</label></div><textarea name="Exit interview process" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Diversity tracking</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Diversity tracking" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Diversity tracking" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Workforce planning method</label></div><textarea name="Workforce planning method" rows="4" class="textarea-premium"></textarea></div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="5">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 5</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Sales & Marketing</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Sales team size</label></div><input type="number" min="0" name="Sales team size" class="input-premium"></div>
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">Lead generation methods</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="checkbox" name="Lead generation methods" value="Ads"><span>Ads</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Lead generation methods" value="Referral"><span>Referral</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Lead generation methods" value="Organic"><span>Organic</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Lead generation methods" value="Cold outreach"><span>Cold outreach</span></label>
+                                    <label class="choice-item relative"><input type="checkbox" name="Lead generation methods" value="Events"><span>Events</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Lead to customer conversion rate (%)</label></div><input type="number" min="0" max="100" name="Lead to customer conversion rate (%)" class="input-premium"></div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Average sales cycle length (days)</label></div><input type="number" min="0" name="Average sales cycle length (days)" class="input-premium"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">CRM usage level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="CRM usage level" value="None"><span>None</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="CRM usage level" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="CRM usage level" value="Advanced"><span>Advanced</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Lead scoring method</label></div><textarea name="Lead scoring method" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Marketing ROI tracking</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Marketing ROI tracking" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Marketing ROI tracking" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Content creation frequency</label></div>
+                                <select name="Content creation frequency" class="select-premium">
+                                    <option value="">Select frequency</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Email marketing automation</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Email marketing automation" value="None"><span>None</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Email marketing automation" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Email marketing automation" value="Advanced"><span>Advanced</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Social media management</label></div><textarea name="Social media management" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer segmentation</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Customer segmentation" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer segmentation" value="Intermediate"><span>Intermediate</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Customer segmentation" value="Advanced"><span>Advanced</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Sales forecasting accuracy</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Sales forecasting accuracy" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Sales forecasting accuracy" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Sales forecasting accuracy" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Competitor analysis method</label></div><textarea name="Competitor analysis method" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Campaign performance tracking</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Campaign performance tracking" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Campaign performance tracking" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Pricing strategy</label></div><textarea name="Pricing strategy" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Customer journey understanding</label></div>
+                                <input type="range" min="1" max="5" step="1" name="Customer journey understanding" class="w-full">
+                                <div class="flex justify-between text-xs text-slate-500 mt-1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Marketing tools used</label></div><textarea name="Marketing tools used" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Sales training availability</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Sales training availability" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Sales training availability" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="6">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 6</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Operations</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Operational efficiency</label></div>
+                                <input type="range" min="1" max="5" step="1" name="Operational efficiency" class="w-full">
+                                <div class="flex justify-between text-xs text-slate-500 mt-1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Workflow automation level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Workflow automation level" value="None"><span>None</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Workflow automation level" value="Partial"><span>Partial</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Workflow automation level" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Employee workload</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Employee workload" value="Underutilized"><span>Underutilized</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Employee workload" value="Optimal"><span>Optimal</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Employee workload" value="Overloaded"><span>Overloaded</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Process bottlenecks frequency</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Process bottlenecks frequency" value="Rare"><span>Rare</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Process bottlenecks frequency" value="Occasional"><span>Occasional</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Process bottlenecks frequency" value="Frequent"><span>Frequent</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Ease of accessing information</label></div>
+                                <input type="range" min="1" max="5" step="1" name="Ease of accessing information" class="w-full">
+                                <div class="flex justify-between text-xs text-slate-500 mt-1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Human error frequency</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Human error frequency" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Human error frequency" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Human error frequency" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Response time to operational issues</label></div>
+                                <input type="text" name="Response time to operational issues" class="input-premium" placeholder="e.g. 3 hours">
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">KPI tracking method</label></div><textarea name="KPI tracking method" rows="4" class="textarea-premium"></textarea></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Time/task tracking method</label></div><textarea name="Time/task tracking method" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Cross-team collaboration</label></div>
+                                <input type="range" min="1" max="5" step="1" name="Cross-team collaboration" class="w-full">
+                                <div class="flex justify-between text-xs text-slate-500 mt-1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="7">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 7</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Supply Chain & Quality Control</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Number of suppliers</label></div><input type="number" min="0" name="Number of suppliers" class="input-premium"></div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">On-time delivery rate (%)</label></div><input type="number" min="0" max="100" name="On-time delivery rate (%)" class="input-premium"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Supply chain visibility</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Supply chain visibility" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Supply chain visibility" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Supply chain visibility" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Inventory system</label></div><textarea name="Inventory system" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Lead time variability</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Lead time variability" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Lead time variability" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Lead time variability" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Safety stock optimization</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Safety stock optimization" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Safety stock optimization" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Quality metrics tracking</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Quality metrics tracking" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Quality metrics tracking" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Compliance level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Compliance level" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Compliance level" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Compliance level" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Issue resolution time</label></div><input type="text" name="Issue resolution time" class="input-premium" placeholder="e.g. 24 hours"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Preventive vs corrective approach</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Preventive vs corrective approach" value="Preventive"><span>Preventive</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Preventive vs corrective approach" value="Reactive"><span>Reactive</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Preventive vs corrective approach" value="Both"><span>Both</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Training frequency</label></div>
+                                <select name="Training frequency" class="select-premium">
+                                    <option value="">Select frequency</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step card-premium question-card hidden section-title" data-step="8">
+                        <div class="flex items-start justify-between gap-4 mb-7">
+                            <div>
+                                <p class="option-kicker mb-1">Section 8</p>
+                                <h2 class="text-2xl md:text-3xl font-bold">Finance & IT & Final Thoughts</h2>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Cash flow forecasting accuracy</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Cash flow forecasting accuracy" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cash flow forecasting accuracy" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cash flow forecasting accuracy" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Days Sales Outstanding (DSO)</label></div><input type="number" min="0" name="Days Sales Outstanding (DSO)" class="input-premium"></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Accounts payable process</label></div><textarea name="Accounts payable process" rows="4" class="textarea-premium"></textarea></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Expense approval system</label></div><textarea name="Expense approval system" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Budget vs actual variance</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Budget vs actual variance" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Budget vs actual variance" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Budget vs actual variance" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Financial reporting frequency</label></div>
+                                <select name="Financial reporting frequency" class="select-premium">
+                                    <option value="">Select frequency</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Cost analysis method</label></div><textarea name="Cost analysis method" rows="4" class="textarea-premium"></textarea></div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Revenue forecasting method</label></div><textarea name="Revenue forecasting method" rows="4" class="textarea-premium"></textarea></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Profitability tracking</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Profitability tracking" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Profitability tracking" value="Detailed"><span>Detailed</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Fraud controls in place</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Fraud controls in place" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Fraud controls in place" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Working capital optimization</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Working capital optimization" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Working capital optimization" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2"><div class="option-label"><label class="block text-sm font-semibold">Investment decision process</label></div><textarea name="Investment decision process" rows="4" class="textarea-premium"></textarea></div>
+
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Age of IT systems</label></div>
+                                <select name="Age of IT systems" class="select-premium">
+                                    <option value="">Select age</option>
+                                    <option>&lt;2 years</option>
+                                    <option>2-5 years</option>
+                                    <option>5+ years</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">System integration level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="System integration level" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="System integration level" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="System integration level" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Data accessibility</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Data accessibility" value="Limited"><span>Limited</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Data accessibility" value="Moderate"><span>Moderate</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Data accessibility" value="Full"><span>Full</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Cybersecurity level</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Cybersecurity level" value="Basic"><span>Basic</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cybersecurity level" value="Intermediate"><span>Intermediate</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cybersecurity level" value="Advanced"><span>Advanced</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Backup and recovery</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Backup and recovery" value="No"><span>No</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Backup and recovery" value="Partial"><span>Partial</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Backup and recovery" value="Full"><span>Full</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">System uptime (%)</label></div><input type="number" min="0" max="100" name="System uptime (%)" class="input-premium"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Data accuracy</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Data accuracy" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Data accuracy" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Data accuracy" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Cloud adoption</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Cloud adoption" value="None"><span>None</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cloud adoption" value="Partial"><span>Partial</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Cloud adoption" value="Full"><span>Full</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">IT automation</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="IT automation" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="IT automation" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="IT automation" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div><div class="option-label"><label class="block text-sm font-semibold">Support resolution time</label></div><input type="text" name="Support resolution time" class="input-premium"></div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">System scalability</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="System scalability" value="Low"><span>Low</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="System scalability" value="Medium"><span>Medium</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="System scalability" value="High"><span>High</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">API capability</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="API capability" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="API capability" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <div class="option-label"><label class="block text-sm font-semibold">What are your top 3 business challenges?</label></div>
+                                <textarea name="What are your top 3 business challenges?" rows="4" class="textarea-premium"></textarea>
+                            </div>
+                            <div>
+                                <div class="option-label"><label class="block text-sm font-semibold">Would you like a free assessment report?</label></div>
+                                <div class="choice-grid">
+                                    <label class="choice-item relative"><input type="radio" name="Would you like a free assessment report?" value="Yes"><span>Yes</span></label>
+                                    <label class="choice-item relative"><input type="radio" name="Would you like a free assessment report?" value="No"><span>No</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div id="formError" class="hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
+
+                    <div class="flex items-center justify-between gap-3 pt-4 md:pt-5 pb-2">
+                        <button type="button" id="backBtn" class="btn-secondary hidden">Back</button>
+                        <div class="ml-auto flex items-center gap-3">
+                            <button type="button" id="nextBtn" class="btn-primary">Next</button>
+                            <button type="submit" id="submitBtn" class="btn-primary hidden"><span id="submitLabel">Submit Assessment</span></button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const form = document.getElementById("assessmentForm");
+const steps = Array.from(document.querySelectorAll(".form-step"));
+const chips = Array.from(document.querySelectorAll(".step-chip"));
+const backBtn = document.getElementById("backBtn");
+const nextBtn = document.getElementById("nextBtn");
+const submitBtn = document.getElementById("submitBtn");
+const progressBar = document.getElementById("progressBar");
+const currentStepEl = document.getElementById("currentStep");
+const formError = document.getElementById("formError");
+const successState = document.getElementById("successState");
+const submitLabel = document.getElementById("submitLabel");
+
+let currentStep = 1;
+const totalSteps = steps.length;
+
+function showStep(stepNumber) {
+    steps.forEach((step) => {
+        step.classList.toggle("hidden", Number(step.dataset.step) !== stepNumber);
+    });
+
+    currentStep = stepNumber;
+    currentStepEl.textContent = String(currentStep);
+    progressBar.style.width = ((currentStep / totalSteps) * 100) + "%";
+
+    chips.forEach((chip) => {
+        const active = Number(chip.dataset.chip) === currentStep;
+        chip.classList.toggle("active", active);
+        chip.classList.toggle("bg-slate-100", !active);
+    });
+
+    backBtn.classList.toggle("hidden", currentStep === 1);
+    nextBtn.classList.toggle("hidden", currentStep === totalSteps);
+    submitBtn.classList.toggle("hidden", currentStep !== totalSteps);
+    formError.classList.add("hidden");
+}
+
+function validateCurrentStep() {
+    const activeStep = steps.find((step) => Number(step.dataset.step) === currentStep);
+    if (!activeStep) return true;
+
+    const requiredFields = activeStep.querySelectorAll("[required]");
+    for (const field of requiredFields) {
+        if (!field.value || !field.value.trim()) {
+            field.focus();
+            formError.textContent = "Please complete all required fields before continuing.";
+            formError.classList.remove("hidden");
+            return false;
+        }
+    }
+    return true;
+}
+
+nextBtn.addEventListener("click", () => {
+    if (!validateCurrentStep()) return;
+    showStep(Math.min(currentStep + 1, totalSteps));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+backBtn.addEventListener("click", () => {
+    showStep(Math.max(currentStep - 1, 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!validateCurrentStep()) return;
+
+    formError.classList.add("hidden");
+    submitBtn.disabled = true;
+    submitLabel.textContent = "Submitting...";
+
+    try {
+        const response = await fetch("/submit-assessment", {
+            method: "POST",
+            body: new FormData(form)
+        });
+
+        if (!response.ok) {
+            throw new Error("Submission failed");
+        }
+
+        form.classList.add("hidden");
+        successState.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+        formError.textContent = "Could not submit right now. Please try again.";
+        formError.classList.remove("hidden");
+        submitBtn.disabled = false;
+        submitLabel.textContent = "Submit Assessment";
+    }
+});
+
+showStep(1);
+</script>
+{% endblock %}
+

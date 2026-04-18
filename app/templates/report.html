@@ -1,319 +1,1137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <style>
-
     @page {
-  margin: 18mm 15mm 22mm 15mm;
-  size: A4;
+      size: A4;
+      margin: 14mm 12mm 16mm 12mm;
 
-  @bottom-center {
-    content: "Prepared by Welvom AI Consulting  ·  www.welvom.com  ·  Confidential";
-    font-size: 9px;
-    color: #a0aec0;
-    font-family: Arial, sans-serif;
-    border-top: 1px solid #e2e8f0;
-    padding-top: 5px;
-  }
+      @bottom-left {
+        content: "Welvom AI Consulting | Confidential";
+        color: #7a8798;
+        font-size: 9px;
+      }
 
-  @bottom-right {
-    content: "Page " counter(page) " of " counter(pages);
-    font-size: 9px;
-    color: #a0aec0;
-    font-family: Arial, sans-serif;
-    padding-top: 5px;
-  }
-}
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        color: #7a8798;
+        font-size: 9px;
+      }
+    }
 
-@page cover {
-  margin: 0;
-  @bottom-center { content: none; }
-  @bottom-right { content: none; }
-}
+    @page :first {
+      margin: 0;
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  color: #1a1a2e;
-  font-size: 11.5px;
-  line-height: 1.7;
-}
+    html {
+      background: #ffffff;
+    }
 
-/* ── COVER ── */
-.cover {
-  page: cover;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  color: white;
-  width: 210mm;
-  min-height: 297mm;
-  padding: 70px 60px 60px 60px;
-  page-break-after: always;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #1d2939;
+      font-size: 11px;
+      line-height: 1.55;
+      background: #ffffff;
+      -webkit-text-size-adjust: 100%;
+    }
 
-.cover-badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.15);
-  color: #a0d8ef;
-  padding: 6px 18px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  margin-bottom: 40px;
-  text-transform: uppercase;
-}
+    .cover {
+      page-break-after: always;
+      padding: 30mm 20mm 22mm 20mm;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 28%),
+        linear-gradient(145deg, #08121f 0%, #14304d 52%, #1f5f8b 100%);
+    }
 
-.cover h1 {
-  font-size: 40px;
-  font-weight: 800;
-  margin-bottom: 10px;
-  line-height: 1.2;
-  color: white;
-}
+    .cover-tag {
+      display: inline-block;
+      margin-bottom: 22px;
+      padding: 7px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
 
-.cover .cover-subtitle {
-  font-size: 15px;
-  color: #a0aec0;
-  margin-bottom: 50px;
-}
+    .cover h1 {
+      margin: 0 0 10px 0;
+      font-size: 34px;
+      line-height: 1.12;
+    }
 
-.cover-company {
-  font-size: 28px;
-  color: #63b3ed;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
+    .cover-subtitle {
+      max-width: 420px;
+      margin: 0 0 32px 0;
+      color: #d4e6f4;
+      font-size: 14px;
+    }
 
-.cover-meta {
-  font-size: 13px;
-  color: #718096;
-  margin-bottom: 5px;
-}
+    .cover-grid {
+      width: 100%;
+      margin-top: 28px;
+      border-collapse: collapse;
+    }
 
-.cover-divider {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  margin: 50px 0 35px 0;
-}
+    .cover-grid td {
+      width: 50%;
+      padding: 0 0 18px 0;
+      vertical-align: top;
+      background: transparent;
+      border-bottom: 0;
+    }
 
-.cover-footer-label {
-  font-size: 11px;
-  color: #718096;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+    .cover-grid tr:nth-child(even) td,
+    .cover-grid tr:nth-child(odd) td {
+      background: transparent;
+    }
 
-.cover-footer-brand {
-  font-size: 20px;
-  color: #a0d8ef;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
+    .cover-label {
+      margin-bottom: 5px;
+      color: #b8d5ea;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-.cover-footer-contact {
-  font-size: 12px;
-  color: #718096;
-}
+    .cover-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
 
-/* ── AUDIT BAR ── */
-.audit-bar {
-  background: #f0f4f8;
-  border-left: 4px solid #3182ce;
-  padding: 10px 16px;
-  margin-bottom: 28px;
-  border-radius: 0 4px 4px 0;
-  font-size: 11px;
-  color: #4a5568;
-}
+    .cover-footer {
+      margin-top: 22px;
+      color: #d4e6f4;
+      font-size: 11px;
+      line-height: 1.55;
+    }
 
-.audit-bar strong { color: #1a1a2e; }
+    .topbar {
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: #102a43;
+      font-size: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
 
-/* ── SECTION HEADERS ── */
-.section-header {
-  background: linear-gradient(90deg, #0f0c29, #302b63);
-  color: white;
-  padding: 12px 18px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin: 30px 0 16px 0;
-  border-radius: 4px;
-  page-break-after: avoid;
-  break-after: avoid;
-}
+    .hero {
+      margin-bottom: 10px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      color: #102a43;
+    }
 
-.section-header.no-break {
-  page-break-before: avoid;
-  break-before: avoid;
-}
+    .hero h2 {
+      margin: 0 0 8px 0;
+      color: #102a43;
+      font-size: 20px;
+    }
 
-/* ── H2 — subsection titles ── */
-h2 {
-  color: #1a1a2e;
-  font-size: 11.5px;
-  font-weight: 700;
-  border-left: 4px solid #63b3ed;
-  padding-left: 10px;
-  margin: 22px 0 6px 0;
-  text-transform: uppercase;
-  page-break-after: avoid;
-  break-after: avoid;
-}
+    .hero p {
+      margin: 0;
+      color: #486581;
+      font-size: 11.5px;
+    }
 
-/* Keep h2 with whatever follows it */
-h2 + p, h2 + table, h2 + ul, h2 + ol, h2 + h3 {
-  page-break-before: avoid;
-  break-before: avoid;
-}
+    .stat-grid {
+      width: 100%;
+      margin: 10px 0 12px 0;
+      border-collapse: separate;
+      border-spacing: 8px;
+    }
 
-/* ── H3 ── */
-h3 {
-  color: #2b4a7a;
-  font-size: 11px;
-  font-weight: 700;
-  margin: 16px 0 6px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  page-break-after: avoid;
-  break-after: avoid;
-}
+    .stat-grid td {
+      width: 25%;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #d9e6f2;
+      border-radius: 12px;
+      vertical-align: top;
+    }
 
-h3 + p, h3 + table, h3 + ul, h3 + ol {
-  page-break-before: avoid;
-  break-before: avoid;
-}
+    .stat-label {
+      color: #667085;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
 
-/* ── PARAGRAPHS ── */
-p {
-  margin-bottom: 7px;
-  color: #2d3748;
-  orphans: 3;
-  widows: 3;
-}
+    .stat-value {
+      margin-top: 6px;
+      color: #102a43;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
 
-/* ── LISTS ── */
-ul, ol {
-  margin: 4px 0 10px 20px;
-}
+    .section-title,
+    .subsection-title {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
 
-ul li, ol li {
-  margin-bottom: 3px;
-  color: #2d3748;
-}
+    .section-title {
+      margin: 16px 0 8px 0;
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: #102a43;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      page-break-before: auto;
+      break-before: auto;
+      page-break-after: avoid;
+      break-after: avoid-page;
+    }
 
-/* ── TABLES ── */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 8px 0 18px 0;
-  font-size: 10.5px;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
+    .section-title.first-section {
+      page-break-before: auto;
+      break-before: auto;
+    }
 
-thead {
-  display: table-header-group;
-}
+    .section-title.compact {
+      margin-top: 14px;
+      page-break-before: auto;
+      break-before: auto;
+    }
 
-table th {
-  background: #1a1a2e;
-  color: white;
-  padding: 8px 10px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
+    .section-title + table,
+    .section-title + .two-col,
+    .section-title + .card {
+      page-break-before: avoid;
+      break-before: avoid-page;
+    }
 
-table td {
-  padding: 7px 10px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #2d3748;
-  vertical-align: top;
-}
+    .index-page {
+      page-break-after: always;
+      break-after: page;
+      margin: 0 0 8px 0;
+      padding: 18px 0 0 0;
+    }
 
-table tr:nth-child(even) td {
-  background: #f7fafc;
-}
+    .index-title {
+      margin: 0 0 14px 0;
+      color: #102a43;
+      font-size: 20px;
+      font-weight: 700;
+    }
 
-table tr.total-row td {
-  background: #dbeafe;
-  font-weight: 700;
-  color: #1a1a2e;
-  border-top: 2px solid #3182ce;
-}
+    .index-intro {
+      margin: 0 0 14px 0;
+      color: #486581;
+      font-size: 11.5px;
+    }
 
-/* Keep heading + table together */
-h2 + table, h3 + table {
-  page-break-before: avoid;
-  break-before: avoid;
-}
-.keep-together {
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-/* ── HIGHLIGHT BOXES ── */
-.highlight-box {
-  background: #ebf8ff;
-  border-left: 4px solid #3182ce;
-  padding: 10px 14px;
-  margin: 10px 0;
-  border-radius: 0 4px 4px 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
+    .index-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
-.highlight-box.red {
-  background: #fff5f5;
-  border-left-color: #e53e3e;
-}
+    .index-list li {
+      display: block;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 11px;
+    }
 
-.highlight-box.green {
-  background: #f0fff4;
-  border-left-color: #38a169;
-}
+    .index-list .label {
+      color: #102a43;
+      font-weight: 700;
+    }
 
-.highlight-box.orange {
-  background: #fffaf0;
-  border-left-color: #dd6b20;
-}
+    .index-list .toc-link {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #102a43;
+      text-decoration: none;
+      font-weight: 700;
+    }
 
+    .index-list .toc-page {
+      color: #102a43;
+      font-weight: 700;
+      min-width: 28px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .index-list .note {
+      display: block;
+      color: #667085;
+      margin-top: 2px;
+      font-size: 10px;
+    }
+
+    .subsection-title {
+      margin: 10px 0 4px 0;
+      color: #12344d;
+      font-size: 12px;
+      font-weight: 700;
+      page-break-after: avoid;
+      break-after: avoid-page;
+    }
+
+    .subsection-title + table {
+      page-break-before: avoid;
+      break-before: avoid-page;
+    }
+
+    .card {
+      margin-bottom: 10px;
+      padding: 11px 13px;
+      background: #ffffff;
+      border: 1px solid #dbe7f3;
+      border-radius: 12px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .card.flow-card {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .card h4 {
+      margin: 0 0 8px 0;
+      color: #12344d;
+      font-size: 12px;
+    }
+
+    .muted {
+      color: #667085;
+    }
+
+    .pill-list {
+      margin: 0 0 10px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pill-list li {
+      display: inline-block;
+      margin: 0 8px 8px 0;
+      padding: 6px 10px;
+      background: #eff6ff;
+      border-radius: 999px;
+      color: #1d4f7a;
+      font-size: 10px;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+    }
+
+    p:empty {
+      display: none;
+    }
+
+    ul {
+      margin: 0 0 0 16px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      margin: 6px 0 8px 0;
+      border-collapse: collapse;
+      table-layout: auto;
+      page-break-inside: auto;
+      break-inside: auto;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    tr {
+      page-break-inside: auto;
+      break-inside: auto;
+    }
+
+    /* Keep table heading row with at least the first data row. */
+    table:not(.cover-grid):not(.stat-grid):not(.two-col) tr:first-child {
+      page-break-after: avoid;
+      break-after: avoid-page;
+    }
+
+    table:not(.cover-grid):not(.stat-grid):not(.two-col) tr:first-child + tr {
+      page-break-before: avoid;
+      break-before: avoid-page;
+    }
+
+    th,
+    td {
+      padding: 7px 8px;
+      vertical-align: top;
+      font-size: 10.5px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: #12344d;
+      color: #ffffff;
+      text-align: left;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      border-bottom: 1px solid #dbe7f3;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fbff;
+    }
+
+    .two-col {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 8px;
+      margin-bottom: 8px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .two-col td {
+      width: 50%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      vertical-align: top;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .two-col tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .dept-block {
+      page-break-inside: auto;
+      break-inside: auto;
+      margin-bottom: 10px;
+    }
+
+    /* Keep department title card with the first detail card to avoid orphan titles. */
+    .dept-block > .card:first-child {
+      page-break-after: avoid;
+      break-after: avoid-page;
+      margin-bottom: 6px;
+    }
+
+    .dept-block > .card:first-child + .card {
+      page-break-before: avoid;
+      break-before: avoid-page;
+    }
+
+    .product-fit-table td:first-child {
+      width: 18%;
+      font-weight: 700;
+      color: #12344d;
+      white-space: nowrap;
+    }
+
+    .product-fit-table td:last-child {
+      width: 82%;
+    }
+
+    .recommendation-list li {
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    .metric-table td:first-child {
+      width: 38%;
+      font-weight: 700;
+      color: #12344d;
+    }
+
+    .checklist li::marker {
+      color: #1f5f8b;
+    }
+
+    .footnote {
+      margin-top: 14px;
+      color: #667085;
+      font-size: 9.5px;
+    }
   </style>
 </head>
 <body>
-
-  <!-- COVER PAGE -->
+  {% set company_data = report.company | default({}) %}
   <div class="cover">
-    <div class="cover-badge">Confidential — AI Transformation Audit Report</div>
-    <h1>AI Transformation<br>Audit Report</h1>
-    <p class="cover-subtitle">Comprehensive Audit &amp; Strategic AI Implementation Roadmap</p>
+    <div class="cover-tag">Confidential | AI Transformation Audit</div>
+    <h1>AI Transformation Report</h1>
+    <p class="cover-subtitle">Comprehensive business assessment, AI opportunity mapping, and implementation roadmap prepared by Welvom AI.</p>
 
-    <div class="cover-company">{{ company_name }}</div>
-    <div class="cover-meta">{{ industry }} | {{ employees }} employees</div>
-    <div class="cover-meta">Report Generated: {{ date }}</div>
+    <table class="cover-grid">
+      <tr>
+        <td>
+          <div class="cover-label">Company</div>
+          <div class="cover-value">{{ company_name }}</div>
+        </td>
+        <td>
+          <div class="cover-label">Industry</div>
+          <div class="cover-value">{{ industry }}</div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="cover-label">Assessment Date</div>
+          <div class="cover-value">{{ date }}</div>
+        </td>
+        <td>
+          <div class="cover-label">Prepared For</div>
+          <div class="cover-value">{{ company_data.contact_name | default('Client representative') }}</div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="cover-label">Company Size</div>
+          <div class="cover-value">{{ employees }}</div>
+        </td>
+        <td>
+          <div class="cover-label">AI Readiness</div>
+          <div class="cover-value">{{ readiness_level }}</div>
+        </td>
+      </tr>
+    </table>
 
-    <hr class="cover-divider">
-
-    <div class="cover-footer-label">Report Generated By</div>
-    <div class="cover-footer-brand">WELVOM AI</div>
-    <div class="cover-footer-contact">
-      www.welvom.com &nbsp;|&nbsp; contact@welvom.com
+    <div class="cover-footer">
+      Welvom AI Consulting<br>
+      www.welvom.com | contact@welvom.com
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div class="audit-bar">
-    <strong>Company:</strong> {{ company_name }} &nbsp;&nbsp;|&nbsp;&nbsp;
-    <strong>Industry:</strong> {{ industry }} &nbsp;&nbsp;|&nbsp;&nbsp;
-    <strong>Date:</strong> {{ date }} &nbsp;&nbsp;|&nbsp;&nbsp;
-    <strong>Prepared by:</strong> Welvom AI
+  <div class="index-page">
+    <h2 class="index-title">Index</h2>
+    <p class="index-intro">A quick map of the report sections</p>
+    <ul class="index-list">
+      <li><a class="toc-link" href="#sec-1"><span class="label">Section 1: Executive Briefing</span><span class="toc-page" data-target="sec-1">{{ (toc_pages | default({})).get('sec-1', '-') }}</span></a><span class="note">Summary, snapshot, critical findings</span></li>
+      <li><a class="toc-link" href="#sec-2"><span class="label">Section 2: Comprehensive Department Analysis</span><span class="toc-page" data-target="sec-2">{{ (toc_pages | default({})).get('sec-2', '-') }}</span></a><span class="note">Department-by-department detail</span></li>
+      <li><a class="toc-link" href="#sec-3"><span class="label">Section 3: Department Benchmark Comparison</span><span class="toc-page" data-target="sec-3">{{ (toc_pages | default({})).get('sec-3', '-') }}</span></a><span class="note">Cross-function comparison</span></li>
+      <li><a class="toc-link" href="#sec-4"><span class="label">Section 4: Leakage Scorecard</span><span class="toc-page" data-target="sec-4">{{ (toc_pages | default({})).get('sec-4', '-') }}</span></a><span class="note">Hours lost and FTE impact</span></li>
+      <li><a class="toc-link" href="#sec-5"><span class="label">Section 5: Cost Reduction Opportunities</span><span class="toc-page" data-target="sec-5">{{ (toc_pages | default({})).get('sec-5', '-') }}</span></a><span class="note">Savings and direct cost levers</span></li>
+      <li><a class="toc-link" href="#sec-6"><span class="label">Section 6: 90-180 Day Implementation Roadmap</span><span class="toc-page" data-target="sec-6">{{ (toc_pages | default({})).get('sec-6', '-') }}</span></a><span class="note">Phased rollout plan</span></li>
+      <li><a class="toc-link" href="#sec-7"><span class="label">Section 7: 12-Month ROI Projections</span><span class="toc-page" data-target="sec-7">{{ (toc_pages | default({})).get('sec-7', '-') }}</span></a><span class="note">Investment, savings, break-even</span></li>
+      <li><a class="toc-link" href="#sec-8"><span class="label">Section 8: Strategic Recommendations</span><span class="toc-page" data-target="sec-8">{{ (toc_pages | default({})).get('sec-8', '-') }}</span></a><span class="note">Immediate through long-term actions</span></li>
+      <li><a class="toc-link" href="#sec-9"><span class="label">Section 9: Risk Mitigation Plan</span><span class="toc-page" data-target="sec-9">{{ (toc_pages | default({})).get('sec-9', '-') }}</span></a><span class="note">Governance and adoption controls</span></li>
+      <li><a class="toc-link" href="#sec-10"><span class="label">Section 10: Future Vision</span><span class="toc-page" data-target="sec-10">{{ (toc_pages | default({})).get('sec-10', '-') }}</span></a><span class="note">Operating model outlook</span></li>
+      <li><a class="toc-link" href="#sec-11"><span class="label">Section 11: Next Steps & Call to Action</span><span class="toc-page" data-target="sec-11">{{ (toc_pages | default({})).get('sec-11', '-') }}</span></a><span class="note">Checklist, partnership, contact</span></li>
+    </ul>
   </div>
 
-  {{ report_html | safe }}
+  <script>
+    // TOC page numbers are computed in PDF generation using print media layout.
+    window.__tocReady = true;
+  </script>
 
+  <div id="page3-start"></div>
+
+  <div class="topbar">
+    <strong>Company:</strong> {{ company_name }}
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <strong>Industry:</strong> {{ industry }}
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <strong>Prepared by:</strong> Welvom AI
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <strong>Date:</strong> {{ date }}
+  </div>
+
+  <div class="hero">
+    <h2>{{ (report.overview | default({})).headline | default('AI Transformation opportunity report') }}</h2>
+    <p>This report translates the submitted business assessment into an executive narrative, functional analysis, estimated automation potential, and a practical implementation roadmap.</p>
+  </div>
+
+  <table class="stat-grid">
+    <tr>
+      <td>
+        <div class="stat-label">AI Readiness Level</div>
+        <div class="stat-value">{{ (report.overview | default({})).readiness_level | default('Emerging') }}</div>
+      </td>
+      <td>
+        <div class="stat-label">Overall Assessment</div>
+        <div class="stat-value">{{ (report.overview | default({})).overall_score | default('N/A') }}</div>
+      </td>
+      <td>
+        <div class="stat-label">Annual Loss Estimate</div>
+        <div class="stat-value">{{ (report.overview | default({})).annual_loss_estimate | default('Not available') }}</div>
+      </td>
+      <td>
+        <div class="stat-label">Year 1 ROI</div>
+        <div class="stat-value">{{ (report.overview | default({})).year_one_roi | default('Not available') }}</div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="two-col">
+    <tr>
+      <td>
+        <div class="card">
+          <h4>Competitive Positioning</h4>
+          <p>{{ (report.overview | default({})).competitive_position | default('Comparative position not available from this assessment.') }}</p>
+        </div>
+      </td>
+      <td>
+        <div class="card">
+          <h4>Industry Insight</h4>
+          <p>{{ (report.overview | default({})).industry_insight | default('Industry insight is unavailable for this submission.') }}</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <h4>Financial Bridge</h4>
+    <p><strong>Current loss:</strong> {{ ((report.overview | default({})).financial_bridge | default({})).current_loss | default('N/A') }}</p>
+    <p><strong>Recoverable automation:</strong> {{ ((report.overview | default({})).financial_bridge | default({})).recoverable_automation | default('N/A') }}</p>
+    <p><strong>Additional upside:</strong> {{ ((report.overview | default({})).financial_bridge | default({})).additional_upside | default('N/A') }}</p>
+    <p><strong>Total improvement potential:</strong> {{ ((report.overview | default({})).financial_bridge | default({})).total_improvement_potential | default('N/A') }}</p>
+  </div>
+
+  <div class="section-title first-section" id="sec-1">Section 1: Executive Briefing</div>
+
+  <div class="card">
+      <h4>{{ (report.executive | default({})).leadership_letter_title | default('Leadership summary') }}</h4>
+      {% for paragraph in (report.executive | default({})).leadership_letter | default(['A leadership summary is not available for this report.']) %}
+      <p>{{ paragraph }}</p>
+    {% endfor %}
+  </div>
+
+  <table class="two-col">
+    <tr>
+      <td>
+        <div class="card">
+          <h4>Executive Summary</h4>
+          <ul>
+            {% for item in (report.executive | default({})).executive_summary | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </td>
+      <td>
+        <div class="card">
+          <h4>Business Snapshot</h4>
+          <table class="metric-table">
+            {% for key, value in (report.executive | default({})).business_snapshot | default({}) | dictsort %}
+            <tr>
+              <td>{{ key }}</td>
+              <td>{{ value }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2">Business snapshot data not available.</td></tr>
+            {% endfor %}
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="two-col">
+    <tr>
+      <td>
+        <div class="card">
+          <h4>Brutal Insight</h4>
+          <p>{{ (report.executive | default({})).brutal_insight | default('') }}</p>
+        </div>
+      </td>
+      <td>
+        <div class="card">
+          <h4>Risk of Inaction</h4>
+          <p>{{ (report.executive | default({})).risk_of_inaction | default('') }}</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <h4>Critical Findings Dashboard</h4>
+    <table>
+      <tr>
+        <th>Area</th>
+        <th>Current State</th>
+        <th>Benchmark</th>
+        <th>Gap</th>
+        <th>Annual Impact</th>
+      </tr>
+      {% for item in (report.executive | default({})).critical_findings | default([]) %}
+      <tr>
+        <td>{{ item.area }}</td>
+        <td>{{ item.current_state }}</td>
+        <td>{{ item.benchmark }}</td>
+        <td>{{ item.gap }}</td>
+        <td>{{ item.annual_impact }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <table class="two-col">
+    <tr>
+      <td>
+        <div class="card">
+          <h4>Strengths to Build On</h4>
+          <ul>
+            {% for item in (report.overview | default({})).strengths | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </td>
+      <td>
+        <div class="card">
+          <h4>Priority Gaps</h4>
+          <ul>
+            {% for item in (report.overview | default({})).priority_gaps | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="section-title" id="sec-2">Section 2: Comprehensive Department Analysis</div>
+
+  {% if (report.assessment | default({})).departments %}
+    {% for dept in (report.assessment | default({})).departments | default([]) %}
+    <div class="dept-block">
+      <div class="card">
+        <h4>{{ dept.title | default('Department analysis') }}</h4>
+      </div>
+
+      <div class="card">
+        <div class="subsection-title">Current State Assessment</div>
+        <ul>
+          {% for item in dept.current_state_assessment %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="subsection-title">Industry Comparison</div>
+        <p>{{ dept.industry_comparison }}</p>
+
+        <div class="subsection-title">Benchmark Comparison</div>
+        <p>{{ dept.benchmark_comparison }}</p>
+        <table>
+          <tr>
+            <th>Current metric</th>
+            <th>Industry average</th>
+            <th>Best in class</th>
+            <th>Peer percentile</th>
+          </tr>
+          <tr>
+            <td>{{ dept.benchmark_metrics.current_metric }}</td>
+            <td>{{ dept.benchmark_metrics.industry_average }}</td>
+            <td>{{ dept.benchmark_metrics.best_in_class }}</td>
+            <td>{{ dept.benchmark_metrics.peer_percentile }}</td>
+          </tr>
+        </table>
+
+        <div class="subsection-title">Financial Mapping</div>
+        <p><strong>Estimated hours lost per month:</strong> {{ dept.hours_lost_per_month }}</p>
+        <p><strong>Estimated annual cost impact:</strong> {{ dept.annual_cost_impact }}</p>
+      </div>
+
+      <div class="card">
+        <div class="subsection-title">Key Performance Indicators</div>
+        <table>
+          <tr>
+            <th>Metric</th>
+            <th>Current</th>
+            <th>12-Month Target</th>
+          </tr>
+          {% for kpi in dept.kpis %}
+          <tr>
+            <td>{{ kpi.metric }}</td>
+            <td>{{ kpi.current }}</td>
+            <td>{{ kpi.target_12_months }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      {% if dept.matched_products %}
+      <div class="card">
+        <div class="subsection-title">Recommended Welvom Solutions</div>
+        {% for product in dept.matched_products %}
+        <table class="product-fit-table">
+          <tr>
+            <td>Product</td>
+            <td>{{ product.product_name }}</td>
+          </tr>
+          <tr>
+            <td>Use Case</td>
+            <td>{{ product.what_does_it_do | default('Workflow improvement for this function') }}</td>
+          </tr>
+          <tr>
+            <td>Business Value</td>
+            <td>{{ product.value_benefits | default('Operational speed and execution visibility gains') }}</td>
+          </tr>
+          <tr>
+            <td>Setup</td>
+            <td>{{ product.setup_days | default('To be confirmed') }} days</td>
+          </tr>
+        </table>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="card">
+        <table class="two-col">
+          <tr>
+            <td>
+              <div class="subsection-title">Immediate Actions</div>
+              <ul class="recommendation-list">
+                {% for item in dept.recommendations.immediate %}
+                <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>
+              <div class="subsection-title">Short-Term Actions</div>
+              <ul class="recommendation-list">
+                {% for item in dept.recommendations.short_term %}
+                <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        </table>
+
+        <div class="subsection-title">Medium-Term Actions</div>
+        <ul class="recommendation-list">
+          {% for item in dept.recommendations.medium_term %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+
+        <div class="subsection-title">Measurable Outcomes</div>
+        <ul>
+          {% for item in dept.measurable_outcomes %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+
+        <p><strong>Estimated Annual Impact:</strong> {{ dept.annual_impact }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="card">
+    <p>No department assessment data is available for this report.</p>
+  </div>
+  {% endif %}
+
+  <div class="section-title compact" id="sec-3">Section 3: Department Benchmark Comparison</div>
+
+  <div class="card">
+    <table>
+      <tr>
+        <th>Department</th>
+        <th>Benchmark Comparison</th>
+      </tr>
+      {% if (report.assessment | default({})).departments %}
+      {% for dept in (report.assessment | default({})).departments | default([]) %}
+      <tr>
+        <td>{{ dept.title }}</td>
+        <td>{{ dept.benchmark_comparison }}</td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td colspan="2">No department benchmark data available.</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <div class="section-title" id="sec-4">Section 4: Leakage Scorecard</div>
+
+  <div class="card">
+    <h4>Leakage Scorecard</h4>
+    <p>{{ (report.calculations | default({})).manhour_analysis_intro | default('') }}</p>
+
+    <div class="subsection-title">Top-line Leakage Summary</div>
+    <p><strong>Total hours lost per month:</strong> {{ (report.calculations | default({})).total_hours_lost_per_month | default('N/A') }}</p>
+    <p><strong>Equivalent FTE impact:</strong> {{ (report.calculations | default({})).fte_equivalent | default('N/A') }}</p>
+
+    <div class="subsection-title">Current Time Investment Breakdown</div>
+    <table>
+      <tr>
+        <th>Department</th>
+        <th>Manual Hours / Week</th>
+        <th>Manual Hours / Year</th>
+        <th>Assumption</th>
+      </tr>
+      {% for row in (report.calculations | default({})).current_time_breakdown | default([]) %}
+      <tr>
+        <td>{{ row.department }}</td>
+        <td>{{ row.manual_hours_per_week }}</td>
+        <td>{{ row.manual_hours_per_year }}</td>
+        <td>{{ row.assumption }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="subsection-title">AI Automation Potential by Department</div>
+    <table>
+      <tr>
+        <th>Department</th>
+        <th>Manual Task</th>
+        <th>Hours Saved / Week</th>
+        <th>Automation %</th>
+        <th>Annual Hours Saved</th>
+        <th>Financial Value</th>
+      </tr>
+      {% for row in (report.calculations | default({})).automation_opportunities | default([]) %}
+      <tr>
+        <td>{{ row.department }}</td>
+        <td>{{ row.manual_task }}</td>
+        <td>{{ row.hours_saved_per_week }}</td>
+        <td>{{ row.automation_percentage }}</td>
+        <td>{{ row.annual_hours_saved }}</td>
+        <td>{{ row.financial_value }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="subsection-title">Summary Table</div>
+    <table>
+      <tr>
+        <th>Department</th>
+        <th>Weekly Hours Saved</th>
+        <th>Annual Hours Saved</th>
+        <th>Financial Value</th>
+      </tr>
+      {% for row in (report.calculations | default({})).summary_table | default([]) %}
+      <tr>
+        <td>{{ row.department }}</td>
+        <td>{{ row.weekly_hours_saved }}</td>
+        <td>{{ row.annual_hours_saved }}</td>
+        <td>{{ row.financial_value }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="subsection-title">Detailed Automation Rationale</div>
+    <ul>
+      {% for item in (report.calculations | default({})).automation_rationale | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+
+    <div class="subsection-title">Key Assumptions</div>
+    <ul>
+      {% for item in (report.calculations | default({})).key_assumptions | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+
+    <p><strong>Overall Automation Percentage:</strong> {{ (report.calculations | default({})).overall_automation_percentage | default('N/A') }}</p>
+  </div>
+
+  <div class="section-title compact" id="sec-5">Section 5: Cost Reduction Opportunities</div>
+
+  <div class="card">
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Estimated Value</th>
+      </tr>
+      {% for item in (report.calculations | default({})).cost_reduction_opportunities | default([]) %}
+      <tr>
+        <td>{{ item.category }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.estimated_value }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3">No cost reduction opportunities available.</td></tr>
+      {% endfor %}
+    </table>
+
+    <p><strong>Total Annual Savings Projection:</strong> {{ (report.calculations | default({})).total_annual_savings_projection | default('N/A') }}</p>
+  </div>
+
+  <div class="section-title" id="sec-6">Section 6: 90-180 Day Implementation Roadmap</div>
+
+  {% for phase in (report.actions | default({})).roadmap | default([]) %}
+  <div class="card">
+    <h4>{{ phase.phase }} | {{ phase.timeline }}</h4>
+    <p><strong>Focus:</strong> {{ phase.focus }}</p>
+    <ul>
+      {% for item in phase.actions | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+
+  <div class="section-title" id="sec-7">Section 7: 12-Month ROI Projections</div>
+
+  <div class="card flow-card">
+    <div class="subsection-title">Investment Required</div>
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Estimated Cost</th>
+        <th>Purpose</th>
+      </tr>
+      {% for item in (report.calculations | default({})).investment_required | default([]) %}
+      <tr>
+        <td>{{ item.item }}</td>
+        <td>{{ item.estimated_cost }}</td>
+        <td>{{ item.purpose }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="card flow-card">
+    <div class="subsection-title">Monthly Savings Accrual</div>
+    <table>
+      <tr>
+        <th>Month</th>
+        <th>Estimated Savings</th>
+        <th>Commentary</th>
+      </tr>
+      {% for item in (report.calculations | default({})).monthly_savings_accrual | default([]) %}
+      <tr>
+        <td>{{ item.month }}</td>
+        <td>{{ item.estimated_savings }}</td>
+        <td>{{ item.commentary }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="card flow-card">
+    <p><strong>Break-even Point:</strong> {{ (report.calculations | default({})).break_even_point | default('N/A') }}</p>
+    <p><strong>Net ROI at End of Year 1:</strong> {{ (report.calculations | default({})).net_roi_year_one | default('N/A') }}</p>
+    <p><strong>3-Year Financial Impact:</strong> {{ (report.calculations | default({})).three_year_impact | default('N/A') }}</p>
+  </div>
+
+  <div class="section-title" id="sec-8">Section 8: Strategic Recommendations</div>
+
+  <div class="card flow-card">
+    <h4>Immediate Actions</h4>
+    <ul>
+      {% for item in ((report.actions | default({})).strategic_recommendations | default({})).immediate_actions | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card flow-card">
+    <h4>Short-Term Priorities</h4>
+    <ul>
+      {% for item in ((report.actions | default({})).strategic_recommendations | default({})).short_term_priorities | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card flow-card">
+    <h4>Medium-Term Initiatives</h4>
+    <ul>
+      {% for item in ((report.actions | default({})).strategic_recommendations | default({})).medium_term_initiatives | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card flow-card">
+    <h4>Long-Term Vision</h4>
+    <ul>
+      {% for item in ((report.actions | default({})).strategic_recommendations | default({})).long_term_vision | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="section-title compact" id="sec-9">Section 9: Risk Mitigation Plan</div>
+  <div class="card flow-card">
+    <ul>
+      {% for item in (report.actions | default({})).risk_mitigation_plan | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="section-title compact" id="sec-10">Section 10: Future Vision</div>
+  <div class="card flow-card">
+    <ul>
+      {% for item in (report.actions | default({})).future_vision | default([]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="section-title compact" id="sec-11">Section 11: Next Steps & Call to Action</div>
+
+  <table class="two-col section-8-grid">
+    <tr>
+      <td>
+        <div class="card flow-card">
+          <h4>Immediate Action Checklist</h4>
+          <ul class="checklist">
+            {% for item in (report.actions | default({})).immediate_action_checklist | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </td>
+      <td>
+        <div class="card flow-card">
+          <h4>Partnership Opportunities with Welvom AI</h4>
+          <ul>
+            {% for item in (report.actions | default({})).partnership_opportunities | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <h4>Contact Details</h4>
+    <p><strong>Email:</strong> contact@welvom.com</p>
+    <p><strong>Website:</strong> www.welvom.com</p>
+    <p><strong>Phone:</strong> +91 XXXXXXXXXX</p>
+    <p class="footnote">This report is generated from the submitted assessment and AI-based business analysis. Final assumptions, financial estimates, and benchmarks should be validated during the implementation scoping session.</p>
+  </div>
 </body>
 </html>

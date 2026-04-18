@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welvom AI - Professional Business Audit & Consulting">
+    <title>{% block title %}Welvom AI Consulting{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#082f49',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Heroicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            @apply bg-white text-slate-900;
+            font-feature-settings: "rlig" 1, "calt" 1;
+        }
+        
+        .glass-effect {
+            @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-white/20 dark:border-slate-700/50;
+        }
+        
+        .gradient-brand {
+            @apply bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-500 dark:to-cyan-500;
+        }
+        
+        .btn-primary {
+            @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-white gradient-brand hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+        }
+        
+        .btn-secondary {
+            @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-200;
+        }
+        
+        .card-premium {
+            @apply bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-6;
+        }
+        
+        .input-premium {
+            @apply w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 focus:border-blue-500 focus:outline-none transition-colors duration-200 placeholder-slate-400 dark:placeholder-slate-600;
+        }
+        
+        .badge-premium {
+            @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium;
+        }
+        
+        .heading-1 {
+            @apply text-4xl md:text-5xl font-bold tracking-tight;
+        }
+        
+        .heading-2 {
+            @apply text-3xl md:text-4xl font-bold tracking-tight;
+        }
+        
+        .heading-3 {
+            @apply text-2xl md:text-3xl font-bold;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="relative z-20 glass-effect border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+                        Welvom AI
+                    </h1>
+                </div>
+                
+                <div class="flex items-center gap-4"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!--     -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Welvom AI</h3>
+                    <p class="text-slate-500 dark:text-slate-300 text-sm">Professional business audit and consulting powered by AI</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-slate-900 dark:text-white">Product</h4>
+                    <ul class="space-y-2 text-sm text-slate-500 dark:text-slate-300">
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">Documentation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-slate-900 dark:text-white">Company</h4>
+                    <ul class="space-y-2 text-sm text-slate-500 dark:text-slate-300">
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-cyan-300 transition-colors">Privacy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-slate-900 dark:text-white">Connect</h4>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-600 text-slate-500 dark:text-slate-300 hover:text-white transition-all">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-600 text-slate-500 dark:text-slate-300 hover:text-white transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-200 dark:border-slate-800 mt-8 pt-8 flex justify-between items-center text-sm text-slate-500 dark:text-slate-300">
+                <p>&copy; 2026 Welvom AI. All rights reserved.</p>
+                <p>Confidential & Proprietary</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

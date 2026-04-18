@@ -14,6 +14,9 @@ BOSS_EMAIL = os.getenv("BOSS_EMAIL")
 def send_report_email(to_email: str, company_name: str, pdf_bytes: bytes):
     """Send the PDF report to the business owner."""
 
+    if not to_email:
+        raise ValueError("Missing recipient email for report delivery")
+
     encoded_pdf = base64.b64encode(pdf_bytes).decode()
 
     params = {
@@ -101,8 +104,13 @@ def send_report_email(to_email: str, company_name: str, pdf_bytes: bytes):
         ]
     }
 
-    response = resend.Emails.send(params)
-    print(f"✅ Report email sent to {to_email} — ID: {response['id']}")
+    try:
+      response = resend.Emails.send(params)
+      print(f"✅ Report email sent to {to_email} — ID: {response['id']}")
+      return response
+    except Exception as exc:
+      print(f"[Warn] Report email not sent: {exc}")
+      return None
 
 
 def send_lead_notification(form_data: dict, pdf_bytes: bytes):
@@ -198,5 +206,10 @@ def send_lead_notification(form_data: dict, pdf_bytes: bytes):
         ]
     }
 
-    response = resend.Emails.send(params)
-    print(f"✅ Lead notification sent to boss — ID: {response['id']}")
+    try:
+      response = resend.Emails.send(params)
+      print(f"✅ Lead notification sent to boss — ID: {response['id']}")
+      return response
+    except Exception as exc:
+      print(f"[Warn] Lead notification not sent: {exc}")
+      return None
