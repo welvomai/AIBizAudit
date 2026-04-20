@@ -198,8 +198,8 @@
       font-weight: 700;
       letter-spacing: 0.6px;
       text-transform: uppercase;
-      page-break-before: auto;
-      break-before: auto;
+      page-break-before: always;
+      break-before: page;
       page-break-after: avoid;
       break-after: avoid-page;
     }
@@ -455,14 +455,27 @@
     }
 
     .product-fit-table td:first-child {
-      width: 18%;
+      width: 8%;
+      text-align: center;
       font-weight: 700;
       color: #12344d;
       white-space: nowrap;
     }
 
-    .product-fit-table td:last-child {
-      width: 82%;
+    .product-fit-table td:nth-child(2) {
+      width: 34%;
+      font-weight: 700;
+      color: #12344d;
+    }
+
+    .product-fit-table td:nth-child(3) {
+      width: 42%;
+    }
+
+    .product-fit-table td:nth-child(4) {
+      width: 16%;
+      white-space: nowrap;
+      font-weight: 700;
     }
 
     .recommendation-list li {
@@ -542,12 +555,13 @@
       <li><a class="toc-link" href="#sec-3"><span class="label">Section 3: Department Benchmark Comparison</span><span class="toc-page" data-target="sec-3">{{ (toc_pages | default({})).get('sec-3', '-') }}</span></a><span class="note">Cross-function comparison</span></li>
       <li><a class="toc-link" href="#sec-4"><span class="label">Section 4: Leakage Scorecard</span><span class="toc-page" data-target="sec-4">{{ (toc_pages | default({})).get('sec-4', '-') }}</span></a><span class="note">Hours lost and FTE impact</span></li>
       <li><a class="toc-link" href="#sec-5"><span class="label">Section 5: Cost Reduction Opportunities</span><span class="toc-page" data-target="sec-5">{{ (toc_pages | default({})).get('sec-5', '-') }}</span></a><span class="note">Savings and direct cost levers</span></li>
-      <li><a class="toc-link" href="#sec-6"><span class="label">Section 6: 90-180 Day Implementation Roadmap</span><span class="toc-page" data-target="sec-6">{{ (toc_pages | default({})).get('sec-6', '-') }}</span></a><span class="note">Phased rollout plan</span></li>
-      <li><a class="toc-link" href="#sec-7"><span class="label">Section 7: 12-Month ROI Projections</span><span class="toc-page" data-target="sec-7">{{ (toc_pages | default({})).get('sec-7', '-') }}</span></a><span class="note">Investment, savings, break-even</span></li>
-      <li><a class="toc-link" href="#sec-8"><span class="label">Section 8: Strategic Recommendations</span><span class="toc-page" data-target="sec-8">{{ (toc_pages | default({})).get('sec-8', '-') }}</span></a><span class="note">Immediate through long-term actions</span></li>
-      <li><a class="toc-link" href="#sec-9"><span class="label">Section 9: Risk Mitigation Plan</span><span class="toc-page" data-target="sec-9">{{ (toc_pages | default({})).get('sec-9', '-') }}</span></a><span class="note">Governance and adoption controls</span></li>
-      <li><a class="toc-link" href="#sec-10"><span class="label">Section 10: Future Vision</span><span class="toc-page" data-target="sec-10">{{ (toc_pages | default({})).get('sec-10', '-') }}</span></a><span class="note">Operating model outlook</span></li>
-      <li><a class="toc-link" href="#sec-11"><span class="label">Section 11: Next Steps & Call to Action</span><span class="toc-page" data-target="sec-11">{{ (toc_pages | default({})).get('sec-11', '-') }}</span></a><span class="note">Checklist, partnership, contact</span></li>
+      <li><a class="toc-link" href="#sec-6"><span class="label">Section 6: Problem Summary and Welvom Offer Mapping</span><span class="toc-page" data-target="sec-6">{{ (toc_pages | default({})).get('sec-6', '-') }}</span></a><span class="note">Consolidated problems, solutions, and product fit</span></li>
+      <li><a class="toc-link" href="#sec-7"><span class="label">Section 7: 90-180 Day Welvom Implementation Plan</span><span class="toc-page" data-target="sec-7">{{ (toc_pages | default({})).get('sec-7', '-') }}</span></a><span class="note">Welvom setup plus custom rollout track</span></li>
+      <li><a class="toc-link" href="#sec-8"><span class="label">Section 8: 12-Month ROI Projections</span><span class="toc-page" data-target="sec-8">{{ (toc_pages | default({})).get('sec-8', '-') }}</span></a><span class="note">Investment, savings, break-even</span></li>
+      <li><a class="toc-link" href="#sec-9"><span class="label">Section 9: Strategic Recommendations</span><span class="toc-page" data-target="sec-9">{{ (toc_pages | default({})).get('sec-9', '-') }}</span></a><span class="note">Immediate through long-term actions</span></li>
+      <li><a class="toc-link" href="#sec-10"><span class="label">Section 10: Risk Mitigation Plan</span><span class="toc-page" data-target="sec-10">{{ (toc_pages | default({})).get('sec-10', '-') }}</span></a><span class="note">Governance and adoption controls</span></li>
+      <li><a class="toc-link" href="#sec-11"><span class="label">Section 11: Future Vision</span><span class="toc-page" data-target="sec-11">{{ (toc_pages | default({})).get('sec-11', '-') }}</span></a><span class="note">Operating model outlook</span></li>
+      <li><a class="toc-link" href="#sec-12"><span class="label">Section 12: Next Steps & Call to Action</span><span class="toc-page" data-target="sec-12">{{ (toc_pages | default({})).get('sec-12', '-') }}</span></a><span class="note">Checklist, partnership, contact</span></li>
     </ul>
   </div>
 
@@ -784,32 +798,6 @@
         </table>
       </div>
 
-      {% if dept.matched_products %}
-      <div class="card">
-        <div class="subsection-title">Recommended Welvom Solutions</div>
-        {% for product in dept.matched_products %}
-        <table class="product-fit-table">
-          <tr>
-            <td>Product</td>
-            <td>{{ product.product_name }}</td>
-          </tr>
-          <tr>
-            <td>Use Case</td>
-            <td>{{ product.what_does_it_do | default('Workflow improvement for this function') }}</td>
-          </tr>
-          <tr>
-            <td>Business Value</td>
-            <td>{{ product.value_benefits | default('Operational speed and execution visibility gains') }}</td>
-          </tr>
-          <tr>
-            <td>Setup</td>
-            <td>{{ product.setup_days | default('To be confirmed') }} days</td>
-          </tr>
-        </table>
-        {% endfor %}
-      </div>
-      {% endif %}
-
       <div class="card">
         <table class="two-col">
           <tr>
@@ -985,13 +973,76 @@
     <p><strong>Total Annual Savings Projection:</strong> {{ (report.calculations | default({})).total_annual_savings_projection | default('N/A') }}</p>
   </div>
 
-  <div class="section-title" id="sec-6">Section 6: 90-180 Day Implementation Roadmap</div>
+  <div class="section-title" id="sec-6">Section 6: Problem Summary and Welvom Offer Mapping</div>
+
+  <div class="card">
+    <p>{{ ((report.problem_solution_summary | default({})).summary_blurb) | default('A consolidated view of all priority problems and the mapped solution approach.') }}</p>
+    <table>
+      <tr>
+        <th>Function</th>
+        <th>Problem Identified</th>
+        <th>Business Impact</th>
+        <th>Welvom Product</th>
+        <th>Other Custom Solutions</th>
+        <th>Expected Outcome</th>
+      </tr>
+      {% for row in ((report.problem_solution_summary | default({})).rows | default([])) %}
+      <tr>
+        <td>{{ row.function }}</td>
+        <td>{{ row.problem_identified }}</td>
+        <td>{{ row.business_impact }}</td>
+        <td>
+          <ul>
+            {% for item in row.what_welvom_offers | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>
+          <ul>
+            {% for item in row.custom_solutions | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>{{ row.expected_outcome }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No summarized problem-to-solution mapping available.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="section-title" id="sec-7">Section 7: 90-180 Day Welvom Implementation Plan</div>
 
   {% for phase in (report.actions | default({})).roadmap | default([]) %}
   <div class="card">
     <h4>{{ phase.phase }} | {{ phase.timeline }}</h4>
     <p><strong>Focus:</strong> {{ phase.focus }}</p>
-    <ul>
+    <table class="two-col">
+      <tr>
+        <td>
+          <div class="subsection-title">Welvom Products Setup</div>
+          <ul class="recommendation-list">
+            {% for item in phase.welvom_products | default([]) %}
+            <li>{{ item }}</li>
+            {% else %}
+            <li>No new product rollout in this phase.</li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>
+          <div class="subsection-title">Custom Solutions and Integrations</div>
+          <ul class="recommendation-list">
+            {% for item in phase.custom_solutions | default([]) %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+    </table>
+    <div class="subsection-title">Execution Steps</div>
+    <ul class="recommendation-list">
       {% for item in phase.actions | default([]) %}
       <li>{{ item }}</li>
       {% endfor %}
@@ -999,7 +1050,7 @@
   </div>
   {% endfor %}
 
-  <div class="section-title" id="sec-7">Section 7: 12-Month ROI Projections</div>
+  <div class="section-title" id="sec-8">Section 8: 12-Month ROI Projections</div>
 
   <div class="card flow-card">
     <div class="subsection-title">Investment Required</div>
@@ -1043,7 +1094,7 @@
     <p><strong>3-Year Financial Impact:</strong> {{ (report.calculations | default({})).three_year_impact | default('N/A') }}</p>
   </div>
 
-  <div class="section-title" id="sec-8">Section 8: Strategic Recommendations</div>
+  <div class="section-title" id="sec-9">Section 9: Strategic Recommendations</div>
 
   <div class="card flow-card">
     <h4>Immediate Actions</h4>
@@ -1081,7 +1132,7 @@
     </ul>
   </div>
 
-  <div class="section-title compact" id="sec-9">Section 9: Risk Mitigation Plan</div>
+  <div class="section-title compact" id="sec-10">Section 10: Risk Mitigation Plan</div>
   <div class="card flow-card">
     <ul>
       {% for item in (report.actions | default({})).risk_mitigation_plan | default([]) %}
@@ -1090,7 +1141,7 @@
     </ul>
   </div>
 
-  <div class="section-title compact" id="sec-10">Section 10: Future Vision</div>
+  <div class="section-title compact" id="sec-11">Section 11: Future Vision</div>
   <div class="card flow-card">
     <ul>
       {% for item in (report.actions | default({})).future_vision | default([]) %}
@@ -1099,7 +1150,7 @@
     </ul>
   </div>
 
-  <div class="section-title compact" id="sec-11">Section 11: Next Steps & Call to Action</div>
+  <div class="section-title compact" id="sec-12">Section 12: Next Steps & Call to Action</div>
 
   <table class="two-col section-8-grid">
     <tr>

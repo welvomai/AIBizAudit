@@ -349,7 +349,10 @@ def _short_phrase(text: str, fallback: str, max_len: int = 90) -> str:
 
 
 def _catalog_safe_text(text: str, fallback: str, max_len: int = 140) -> str:
-    return _sanitize_catalog_text(text, fallback)
+    cleaned = _sanitize_catalog_text(text, fallback)
+    if len(cleaned) <= max_len:
+        return cleaned
+    return cleaned[: max_len - 3].rstrip() + "..."
 
 
 def _setup_timeline_text(setup_days: str) -> str:
@@ -390,7 +393,7 @@ def product_prompt_context(
 
     lines = [
         "WELVOM PRODUCT CATALOG CONTEXT:",
-        "Use Welvom products as the primary solutions whenever they fit the identified gap.",
+        "Use catalog products only where they are a clear fit for the identified gap.",
         "Do not invent product names that are not in the catalog below.",
         "If no catalog product fits a gap, keep the recommendation generic for that gap only.",
     ]
@@ -407,63 +410,18 @@ def product_prompt_context(
 
 
 def curate_department_recommendations(department: dict[str, Any], form_data: dict[str, Any]) -> dict[str, Any]:
-    matches = matched_products_for_department(department.get("title", ""), form_data, department, limit=3)
+    matches = matched_products_for_department(department.get("title", ""), form_data, department, limit=2)
     if not matches:
         return department
 
-    recommendations = department.get("recommendations") or {}
-    curated = {"immediate": [], "short_term": [], "medium_term": []}
-
-    immediate = matches[0]
-    immediate_solution = _short_phrase(immediate.get("what_does_it_do", ""), "address the core workflow gap")
-    immediate_value = _short_phrase(immediate.get("value_benefits", ""), "faster execution and better visibility")
-    immediate_bullet = (
-        f"Deploy {immediate['product_name']} as the primary solution for this function. "
-        f"Use it to {immediate_solution.lower()} and deliver {immediate_value.lower()}."
-    )
-    timeline = _setup_timeline_text(immediate.get("setup_days", ""))
-    if timeline:
-        immediate_bullet += f" Estimated rollout: {timeline}."
-    curated["immediate"].append(immediate_bullet)
-
-    if len(matches) > 1:
-        short_term = matches[1]
-        short_flow = _short_phrase(short_term.get("user_flows", ""), "the next high-friction workflow")
-        short_value = _short_phrase(short_term.get("value_benefits", ""), "service consistency and cycle-time gains")
-        short_bullet = (
-            f"Roll out {short_term['product_name']} in phase two to strengthen {short_flow.lower()}."
-        )
-        short_bullet += f" Expected value: {short_value}."
-        timeline = _setup_timeline_text(short_term.get("setup_days", ""))
-        if timeline:
-            short_bullet += f" Estimated rollout: {timeline}."
-        curated["short_term"].append(short_bullet)
-
-    if len(matches) > 2:
-        medium_term = matches[2]
-        medium_fit = _short_phrase(medium_term.get("what_does_it_do", ""), "scale automation depth across adjacent processes")
-        medium_bullet = (
-            f"Scale with {medium_term['product_name']} to expand automation maturity across adjacent workflows. "
-            f"Primary fit: {medium_fit}."
-        )
-        timeline = _setup_timeline_text(medium_term.get("setup_days", ""))
-        if timeline:
-            medium_bullet += f" Estimated rollout: {timeline}."
-        curated["medium_term"].append(medium_bullet)
-
-    for phase in ("immediate", "short_term", "medium_term"):
-        if not curated[phase]:
-            existing = list(recommendations.get(phase) or [])
-            if existing:
-                curated[phase].append(existing[0])
-
-    department["recommendations"] = curated
+    # Preserve the AI-generated recommendations exactly — no product name bullets injected here.
+    # Products are surfaced only in Section 6 (problem summary) and Section 7 (implementation plan).
     department["matched_products"] = [
         {
             "product_name": product.get("product_name", ""),
-            "usp": _catalog_safe_text(product.get("usp", ""), "Outcome-focused automation support"),
-            "what_does_it_do": _catalog_safe_text(product.get("what_does_it_do", ""), "Improves workflow execution and control"),
-            "value_benefits": _catalog_safe_text(product.get("value_benefits", ""), "Faster cycle time and better visibility"),
+            "usp": _short_phrase(product.get("usp", ""), "Outcome-focused automation support", max_len=90),
+            "what_does_it_do": _short_phrase(product.get("what_does_it_do", ""), "Improves workflow execution and control", max_len=100),
+            "value_benefits": _short_phrase(product.get("value_benefits", ""), "Faster cycle time and better visibility", max_len=100),
             "setup_days": product.get("setup_days", ""),
         }
         for product in matches

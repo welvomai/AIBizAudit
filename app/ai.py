@@ -675,6 +675,199 @@ def _default_actions() -> dict:
     }
 
 
+def _unique_preserve_order(values: list[str]) -> list[str]:
+    seen = set()
+    result = []
+    for value in values:
+        text = str(value or "").strip()
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(text)
+    return result
+
+
+def _build_problem_solution_summary(report: dict) -> dict:
+    departments = (report.get("assessment") or {}).get("departments") or []
+    rows = []
+    used_products = set()
+
+    for dept in departments:
+        title = dept.get("title") or "Business Function"
+        problem_points = _as_list(dept.get("current_state_assessment"))
+        problem_text = problem_points[0] if problem_points else f"Execution inefficiency observed in {title}."
+
+        hours = dept.get("hours_lost_per_month") or "Not estimated"
+        annual_impact = dept.get("annual_cost_impact") or dept.get("annual_impact") or "Impact estimate not available"
+        impact_text = f"{hours} lost per month | {annual_impact}"
+
+        matched_products = dept.get("matched_products") or []
+        matched_product_names = {
+            str(product.get("product_name") or "").strip().lower()
+            for product in matched_products
+            if str(product.get("product_name") or "").strip()
+        }
+        welvom_offers = []
+        for product in matched_products:
+            name = str(product.get("product_name") or "").strip()
+            if not name:
+                continue
+            if name.lower() in used_products:
+                continue
+            used_products.add(name.lower())
+            setup_days = str(product.get("setup_days") or "").strip()
+            if setup_days:
+                welvom_offers.append(f"{name} (setup: {setup_days} days)")
+            else:
+                welvom_offers.append(name)
+            break
+        if not welvom_offers:
+            welvom_offers = ["No additional product suggested for this row."]
+
+        recommendations = dept.get("recommendations") or {}
+        recommendation_candidates = (
+            _as_list(recommendations.get("immediate"))
+            + _as_list(recommendations.get("short_term"))
+            + _as_list(recommendations.get("medium_term"))
+        )
+        custom_candidates = []
+        for candidate in recommendation_candidates:
+            text = str(candidate or "").strip()
+            if not text:
+                continue
+            lowered = text.lower()
+            if lowered.startswith("product track:") or lowered.startswith("secondary product track:"):
+                continue
+            if any(name in lowered for name in matched_product_names):
+                continue
+            custom_candidates.append(text)
+        custom_solutions = _unique_preserve_order(custom_candidates)[:1]
+        if not custom_solutions:
+            custom_solutions = ["Custom integration and workflow setup as needed."]
+
+        outcomes = _as_list(dept.get("measurable_outcomes"))
+        expected_outcome = outcomes[0] if outcomes else "Target measurable recovery in productivity, response speed, and operating consistency."
+
+        rows.append(
+            {
+                "function": title,
+                "problem_identified": problem_text,
+                "business_impact": impact_text,
+                "what_welvom_offers": welvom_offers,
+                "custom_solutions": custom_solutions,
+                "expected_outcome": expected_outcome,
+            }
+        )
+
+    if not rows:
+        rows = [
+            {
+                "function": "Cross-functional",
+                "problem_identified": "Manual handoffs and fragmented reporting are creating recurring productivity leakage.",
+                "business_impact": "Estimated annual cost impact available in Sections 4 and 5.",
+                "what_welvom_offers": ["No product recommendation available in this summary row."],
+                "custom_solutions": ["Custom integration and operating-model setup aligned to existing tools and team structure."],
+                "expected_outcome": "Improved execution speed, lower manual effort, and stronger KPI control within 90-180 days.",
+            }
+        ]
+
+    # Show all departments — products-matched rows first, then the rest.
+    prioritized_with_products = [row for row in rows if row.get("what_welvom_offers") and row.get("what_welvom_offers") != ["No additional product suggested for this row."]]
+    prioritized_without_products = [row for row in rows if row not in prioritized_with_products]
+    rows = prioritized_with_products + prioritized_without_products
+
+    return {
+        "summary_blurb": "This section summarizes the key problems and maps each one to a practical solution path.",
+        "rows": rows,
+    }
+
+
+def _enrich_roadmap_with_solution_tracks(report: dict) -> None:
+    actions = report.get("actions") or {}
+    roadmap = actions.get("roadmap") or []
+    if not roadmap:
+        return
+
+    departments = (report.get("assessment") or {}).get("departments") or []
+    product_names = []
+    custom_pool = []
+
+    for dept in departments:
+        for product in dept.get("matched_products") or []:
+            name = str(product.get("product_name") or "").strip()
+            if name:
+                product_names.append(name)
+
+        recommendations = dept.get("recommendations") or {}
+        custom_pool.extend(_as_list(recommendations.get("short_term")))
+        custom_pool.extend(_as_list(recommendations.get("medium_term")))
+
+    product_names = _unique_preserve_order(product_names)
+    custom_pool = _unique_preserve_order(custom_pool)
+
+    if not product_names:
+        product_names = [
+            "Welvom Workflow Orchestrator",
+            "Welvom Executive Dashboard Suite",
+            "Welvom AI Copilot Pack",
+        ]
+
+    if not custom_pool:
+        custom_pool = [
+            "Custom integration with existing ERP/CRM and finance systems.",
+            "Department-specific workflow and SLA rule configuration.",
+            "Role-based dashboards and escalation matrix setup.",
+        ]
+
+    max_product_phases = min(len(product_names), 3)
+    for index, phase in enumerate(roadmap):
+        if not isinstance(phase, dict):
+            continue
+
+        if index < max_product_phases:
+            welvom_products = [product_names[index]]
+        else:
+            welvom_products = []
+
+        existing_custom = _as_list(phase.get("custom_solutions"))
+        if existing_custom:
+            custom_solutions = existing_custom[:1]
+        else:
+            start = index % len(custom_pool)
+            custom_solutions = [custom_pool[start]]
+
+        phase["welvom_products"] = _unique_preserve_order(welvom_products)
+        phase["custom_solutions"] = _unique_preserve_order(custom_solutions)
+
+
+def _dedupe_department_products(report: dict, max_total: int = 3, max_per_department: int = 1) -> None:
+    departments = (report.get("assessment") or {}).get("departments") or []
+    seen = set()
+    assigned = 0
+
+    for dept in departments:
+        matched = dept.get("matched_products") or []
+        filtered = []
+        for product in matched:
+            name = str(product.get("product_name") or "").strip()
+            if not name:
+                continue
+            key = name.lower()
+            if key in seen:
+                continue
+            if assigned >= max_total:
+                break
+            filtered.append(product)
+            seen.add(key)
+            assigned += 1
+            if len(filtered) >= max_per_department:
+                break
+        dept["matched_products"] = filtered
+
+
 def _normalize_report(report: dict, form_data: dict) -> dict:
     company_name = form_data.get("Company name", "Your Business")
     industry = form_data.get("Industry", "Business")
@@ -1320,4 +1513,7 @@ def analyze_business(form_data: dict) -> dict:
         curate_department_recommendations(department, form_data)
         for department in normalized["assessment"].get("departments", [])
     ]
+    _dedupe_department_products(normalized, max_total=3, max_per_department=1)
+    normalized["problem_solution_summary"] = _build_problem_solution_summary(normalized)
+    _enrich_roadmap_with_solution_tracks(normalized)
     return normalized

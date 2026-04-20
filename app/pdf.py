@@ -12,12 +12,13 @@ SECTION_HEADINGS = {
     "sec-3": "Section 3: Department Benchmark Comparison",
     "sec-4": "Section 4: Leakage Scorecard",
     "sec-5": "Section 5: Cost Reduction Opportunities",
-    "sec-6": "Section 6: 90-180 Day Implementation Roadmap",
-    "sec-7": "Section 7: 12-Month ROI Projections",
-    "sec-8": "Section 8: Strategic Recommendations",
-    "sec-9": "Section 9: Risk Mitigation Plan",
-    "sec-10": "Section 10: Future Vision",
-    "sec-11": "Section 11: Next Steps & Call to Action",
+    "sec-6": "Section 6: Problem Summary and Welvom Offer Mapping",
+    "sec-7": "Section 7: 90-180 Day Welvom Implementation Plan",
+    "sec-8": "Section 8: 12-Month ROI Projections",
+    "sec-9": "Section 9: Strategic Recommendations",
+    "sec-10": "Section 10: Risk Mitigation Plan",
+    "sec-11": "Section 11: Future Vision",
+    "sec-12": "Section 12: Next Steps & Call to Action",
 }
 
 
